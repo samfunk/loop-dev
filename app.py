@@ -1,5 +1,4 @@
 import os
-import requests
 import operator
 import re
 import json
