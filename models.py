@@ -1,14 +1,12 @@
 from app import db
-from sqlalchemy.dialects.postgresql import JSON
+from sqlalchemy.dialects.postgresql import JSONB
 
 
-class Result(db.Model):
-    __tablename__ = 'results'
+class ModelGrid(db.Model):
+    __tablename__ = 'model_grids'
 
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String())
-    result_all = db.Column(JSON)
-    result_no_stop_words = db.Column(JSON)
+    id   = db.Column(db.String(), primary_key=True)
+    grid = db.Column(JSONB)
 
     def __init__(self, url, result_all, result_no_stop_words):
         self.url = url
