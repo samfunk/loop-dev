@@ -15,14 +15,17 @@ db = SQLAlchemy(app)
 from models import *
 
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
+@app.route("/new_model", methods=['GET', 'POST'])
+def new_model():
+    return 'OK'
 
-@app.route("/results/<job_key>", methods=['GET'])
-def get_results(job_key):
-    return 'hello'
+@app.route("/model/<model_id>/new_point", methods=['GET', 'POST'])
+def new_point(model_id):
+    return 'OK'
 
 if __name__ == '__main__':
     app.run()
