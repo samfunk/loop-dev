@@ -3,7 +3,7 @@ import pandas as pd
 import itertools as it
 
 
-def make_grid(payload, id):
+def make_grid(payload):
     values = list()
     for variable in payload.get("params"):
         _check_presense(["name", "type"], variable)

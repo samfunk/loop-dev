@@ -33,8 +33,13 @@ def new_model():
         return jsonify(exception="Invalid data POSTed to /exists")
 
     new_model_id = uuid.uuid4()
-    grid = make_grid(data, new_model_id)
-    return jsonify(id=new_model_id)
+    try:
+        grid = make_grid(data)
+        db.session.add(ModelGrid(new_model_id, grid.to_json()))
+        db.session.commit()
+    except:
+        errors.append("Unable to add item to database.")
+    return jsonify(id=new_model_id, grid_size=grid.shape)
 
 
 @app.route("/report_metric/<uuid:model_id>")

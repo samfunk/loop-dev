@@ -1,3 +1,5 @@
+import pandas as pd
+
 from app import db
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -13,4 +15,4 @@ class ModelGrid(db.Model):
         self.grid = grid
 
     def __repr__(self):
-        return '<id {}>'.format(self.id)
+        return '<model_grid {} of cardinality {}>'.format(self.id, pd.read_json(self.grid).shape)
