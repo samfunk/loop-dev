@@ -11,6 +11,8 @@ from collections import Counter
 
 from lib.utils import make_grid
 
+from models import *
+
 
 app = Flask(__name__)
 FlaskUUID(app)
@@ -18,12 +20,11 @@ app.config.from_object(os.getenv('APP_SETTINGS') or 'config.DevelopmentConfig')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
-from models import *
-
 
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
 
 @app.route("/new_model", methods=['POST'])
 def new_model():
@@ -35,9 +36,11 @@ def new_model():
     grid = make_grid(data, new_model_id)
     return jsonify(id=new_model_id)
 
+
 @app.route("/report_metric/<uuid:model_id>")
 def report_metric():
     return "OK"
+
 
 @app.route("/new_iteration/<uuid:model_id>", methods=['POST'])
 def new_point(model_id):
