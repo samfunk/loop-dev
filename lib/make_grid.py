@@ -1,3 +1,4 @@
+import math
 import numpy as np
 import pandas as pd
 import itertools as it
@@ -23,7 +24,7 @@ def make_grid(payload):
             error_string = "Variable {} has incorrect type. Must be one of: int, float, enum"
             raise TypeError(error_string.format(variable.get("name")))
 
-    return expand_grid({x.get("name"): x.get("values") for x in values})
+    return _expand_grid({x.get("name"): x.get("values") for x in values})
 
 
 def _raise_type_error(missing):
@@ -43,6 +44,11 @@ def _check_inclusion(keys, variable):
             raise TypeError(error_string.format(variable.get("name"), variable.get("type"), key))
 
 
-def expand_grid(value_hash):
-    return pd.DataFrame(list(it.product(*[y for x, y in value_hash.items()])),
+def _expand_grid(value_hash):
+    grid = pd.DataFrame(list(it.product(*[y for x, y in value_hash.items()])),
                         columns=[x for x in value_hash])
+    grid['_loop_status'] = "candidate"
+    grid['_loop_value'] = math.nan
+    grid['_loop_duration'] = math.nan
+    grid['_loop_id'] = range(grid.shape[0])
+    return grid

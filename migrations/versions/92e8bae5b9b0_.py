@@ -1,13 +1,13 @@
 """empty message
 
-Revision ID: d59f6381bfb7
+Revision ID: 92e8bae5b9b0
 Revises: None
-Create Date: 2016-05-02 15:40:16.235656
+Create Date: 2016-05-04 15:56:58.971549
 
 """
 
 # revision identifiers, used by Alembic.
-revision = 'd59f6381bfb7'
+revision = '92e8bae5b9b0'
 down_revision = None
 
 from alembic import op
@@ -19,6 +19,7 @@ def upgrade():
     op.create_table('model_grids',
     sa.Column('id', sa.String(), nullable=False),
     sa.Column('grid', postgresql.JSONB(), nullable=True),
+    sa.Column('minimize', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     ### end Alembic commands ###
