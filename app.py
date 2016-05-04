@@ -30,12 +30,10 @@ def index():
 def new_model():
     data = request.get_json() or {}
     if not data:
-        return jsonify(exception="Invalid data POSTed to /exists")
-
-    new_model_id = uuid.uuid4()
+        return jsonify(exception="Invalid data POSTed to /new_model")
     try:
         grid = make_grid(data)
-        db.session.add(ModelGrid(new_model_id, grid.to_json()))
+        db.session.add(ModelGrid(uuid.uuid4(), grid.to_json()))
         db.session.commit()
     except:
         errors.append("Unable to add item to database.")
