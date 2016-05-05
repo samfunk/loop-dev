@@ -9,12 +9,14 @@ class ModelGrid(db.Model):
 
     id = db.Column(db.String(), primary_key=True)
     grid = db.Column(JSONB)
+    chooser = db.Column(db.String())
     minimize = db.Column(db.Boolean)
 
-    def __init__(self, id, grid, minimize=False):
+    def __init__(self, id, grid, chooser, minimize=False):
         self.id = id
         self.grid = grid
         self.minimize = minimize
+        self.chooser = chooser
 
     def get_grid(self):
         return pd.read_json(self.grid)

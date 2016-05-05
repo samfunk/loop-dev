@@ -37,11 +37,16 @@ def new_model():
         grid = make_grid(data)
         new_model_id = uuid.uuid4()
         minimize = data.get("minimize") or False
-        db.session.add(ModelGrid(new_model_id, grid.to_json(), minimize))
+        chooser = data.get("chooser") or DEFAULT_CHOOSER
+        if chooser not in list(LIST_OF_CHOOSERS.keys()):
+            error_string = """The chooser <{}> that you've supplied is not yet implemented.
+                You can find the list of available choosers by querying /choosers endpoint."""
+            return jsonify(exception=error_string.format(chooser))
+        db.session.add(ModelGrid(new_model_id, grid.to_json(), chooser, minimize))
         db.session.commit()
     except:
         raise TypeError("Unable to add item to database.")
-    return jsonify(id=new_model_id, grid_size=grid.shape, minimize=minimize)
+    return jsonify(id=new_model_id, grid_size=grid.shape, chooser=chooser, minimize=minimize)
 
 
 @app.route("/report_metric/<uuid:id>", methods=['POST'])
@@ -73,15 +78,39 @@ def report_metric(id):
 
         modelgrid.grid = candidates.to_json()
         db.session.commit()
-        print(candidates)
     except:
         raise TypeError("Unable to find a model with uuid {} in the database.".format(id))
     return jsonify(status="ok")
 
 
-@app.route("/new_iteration/<uuid:model_id>", methods=['POST'])
-def new_point(model_id):
-    return 'OK'
+@app.route("/choosers", methods=['GET', 'POST'])
+def choosers():
+    return jsonify(choosers=list(LIST_OF_CHOOSERS.keys()))
+
+
+@app.route("/new_iteration/<uuid:id>", methods=['GET', 'POST'])
+def new_point(id):
+    try:
+        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+        candidates = modelgrid.get_grid()
+    except:
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
+
+    acquisition_function = LIST_OF_CHOOSERS[modelgrid.chooser]
+    selected_row = acquisition_function(candidates)
+    if selected_row is None:
+        error_string = "There are no more candidates left in the grid. Maybe start a new search?"
+        return jsonify(exception=error_string)
+    candidates.loc[candidates._loop_id == selected_row, "_loop_status"] = "pending"
+    params = candidates.loc[candidates._loop_id == selected_row, :].to_dict(orient='records')[0]
+    params = {k: v for k, v in params.items() if not k.startswith('_loop')}
+    try:
+        modelgrid.grid = candidates.to_json()
+        db.session.commit()
+    except:
+        error_string = "Unable to update the model grid in the database for an unknown reason."
+        return jsonify(exception=error_string)
+    return jsonify(params=params)
 
 if __name__ == '__main__':
     app.run()
