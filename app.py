@@ -110,7 +110,7 @@ def new_point(id):
     except:
         error_string = "Unable to update the model grid in the database for an unknown reason."
         return jsonify(exception=error_string)
-    return jsonify(params=params)
+    return jsonify(params=params, loop_id=selected_row)
 
 if __name__ == '__main__':
     app.run()
