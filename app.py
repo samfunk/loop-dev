@@ -86,7 +86,7 @@ def report_metric(id):
 
 @app.route("/choosers", methods=['GET', 'POST'])
 def choosers():
-    return jsonify(choosers=list(LIST_OF_CHOOSERS.keys()))
+    return jsonify(choosers=list(LIST_OF_CHOOSERS.keys()), default=DEFAULT_CHOOSER)
 
 
 @app.route("/new_iteration/<uuid:id>", methods=['GET', 'POST'])
@@ -95,19 +95,30 @@ def new_point(id):
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
         full_grid = modelgrid.get_grid()
         candidates, pending, complete = slice_df(full_grid)
+        if not candidates.shape[0]:
+            return jsonify(exception="There are no more candidates left in the grid.")
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
 
     acquisition_function = LIST_OF_CHOOSERS[modelgrid.chooser]
-    selected_row = acquisition_function(full_grid, candidates, pending, complete)
-    if selected_row is None:
-        error_string = "There are no more candidates left in the grid. Maybe start a new search?"
-        return jsonify(exception=error_string)
-    candidates.loc[candidates._loop_id == selected_row, "_loop_status"] = "pending"
-    params = candidates.loc[candidates._loop_id == selected_row, :].to_dict(orient='records')[0]
+    # if we don't have any data to model with - use random search
+    if complete.shape[0] < (app.config['RANDOM_SEARCH_THRESHOLD'] or 2):
+        acquisition_function = LIST_OF_CHOOSERS["random"]
+    relevant_columns = [x for x in full_grid.columns.values.tolist() if not x.startswith("_loop")]
+    selected_row, new_grid = acquisition_function(full_grid,
+                                                  candidates[relevant_columns],
+                                                  pending[relevant_columns],
+                                                  complete[relevant_columns],
+                                                  complete["_loop_value"],
+                                                  modelgrid.minimize)
+
+    selected_row = int(candidates.iloc[2]["_loop_id"])
+    new_grid.loc[new_grid._loop_id == selected_row, "_loop_status"] = "pending"
+    params = new_grid.loc[new_grid._loop_id == selected_row, :].to_dict(orient='records')[0]
     params = {k: v for k, v in params.items() if not k.startswith('_loop')}
+
     try:
-        modelgrid.grid = candidates.to_json()
+        modelgrid.grid = new_grid.to_json()
         db.session.commit()
     except:
         error_string = "Unable to update the model grid in the database for an unknown reason."

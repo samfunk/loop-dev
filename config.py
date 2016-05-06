@@ -8,6 +8,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
+    RANDOM_SEARCH_THRESHOLD = 2
     SECRET_KEY = 'change me in production'  # changeme
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
