@@ -1,12 +1,14 @@
 import os
+import pandas as pd
 basedir = os.path.abspath(os.path.dirname(__file__))
+pd.options.mode.chained_assignment = None
 
 
 class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
-    SECRET_KEY = '28f80735910ed7457b2ab4ebbdc76edd6c67712088029d020c4f42fb2ff78ae87b8fad0a918b5f5470130ec22dc0a38281c2e69cef20fb49a0a0d400ebb389ce' #changeme
+    SECRET_KEY = 'change me in production'  # changeme
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 

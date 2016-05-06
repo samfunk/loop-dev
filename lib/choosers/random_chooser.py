@@ -1,5 +1,2 @@
-def next(grid):
-    candidates = grid.loc[grid._loop_status == "candidate", :]
-    if not candidates.shape[0]:
-        return None
-    return int(candidates.sample()["_loop_id"])
+def next(grid, candidates, pending, complete):
+    return int(candidates.sample()["_loop_id"]) if candidates.shape[0] else None

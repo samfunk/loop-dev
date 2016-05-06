@@ -12,6 +12,7 @@ from collections import Counter
 
 from lib.make_grid import make_grid
 from lib.choosers import *
+from lib.utils import *
 
 
 app = Flask(__name__)
@@ -92,12 +93,13 @@ def choosers():
 def new_point(id):
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
-        candidates = modelgrid.get_grid()
+        full_grid = modelgrid.get_grid()
+        candidates, pending, complete = slice_df(full_grid)
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
 
     acquisition_function = LIST_OF_CHOOSERS[modelgrid.chooser]
-    selected_row = acquisition_function(candidates)
+    selected_row = acquisition_function(full_grid, candidates, pending, complete)
     if selected_row is None:
         error_string = "There are no more candidates left in the grid. Maybe start a new search?"
         return jsonify(exception=error_string)
