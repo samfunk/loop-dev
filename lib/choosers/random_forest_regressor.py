@@ -42,10 +42,10 @@ def next(grid, candidates, pending, complete, completed_values, minimize):
     # this is the part that I don't fully understand yet
     # will have to read this: http://arxiv.org/pdf/1012.2599.pdf
     func_s = np.sqrt(variance) + 0.0001
-    mu = (best - mean) / func_s
-    ncdf = sps.norm.cdf(mu)
-    npdf = sps.norm.pdf(mu)
-    ei = func_s * (mu * ncdf + npdf)
+    Z = (best - mean) / func_s
+    ncdf = sps.norm.cdf(Z)
+    npdf = sps.norm.pdf(Z)
+    ei = func_s * (Z * ncdf + npdf)
 
     best_cand = np.argmin(ei) if minimize else np.argmin(ei)
     return (best_cand, grid)
