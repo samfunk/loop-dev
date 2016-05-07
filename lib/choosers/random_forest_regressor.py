@@ -47,7 +47,7 @@ def next(grid, candidates, pending, complete, completed_values, minimize):
     npdf = sps.norm.pdf(Z)
     ei = func_s * (Z * ncdf + npdf)
 
-    best_cand = np.argmin(ei) if minimize else np.argmin(ei)
+    best_cand = np.argmax(ei)
     return (best_cand, grid)
 
 
