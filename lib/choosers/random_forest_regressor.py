@@ -18,7 +18,7 @@ class RandomForestRegressorWithVariance(sklearn.ensemble.RandomForestRegressor):
         return y_hat, y_var
 
 
-def next(grid, candidates, pending, complete, completed_values, minimize):
+def next(grid, candidates, pending, complete, completed_values):
     # some sensible defaults
     rf = RandomForestRegressorWithVariance(n_estimators=50,
                                            max_depth=None,
@@ -36,7 +36,7 @@ def next(grid, candidates, pending, complete, completed_values, minimize):
 
     # Predict the marginal means and variances at candidates.
     mean, variance = rf.predict(_encode_categorical_df(candidates, grid))
-    best = np.min(completed_values) if minimize else np.max(completed_values)
+    best = np.max(completed_values)
 
     # Expected improvement
     # this is the part that I don't fully understand yet

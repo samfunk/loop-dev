@@ -95,6 +95,7 @@ def new_point(id):
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
         full_grid = modelgrid.get_grid()
         candidates, pending, complete = slice_df(full_grid)
+        values = complete["_loop_value"] * (-1)**modelgrid.minimize
         if not candidates.shape[0]:
             return jsonify(exception="There are no more candidates left in the grid.")
     except:
@@ -109,10 +110,9 @@ def new_point(id):
                                                   candidates[relevant_columns],
                                                   pending[relevant_columns],
                                                   complete[relevant_columns],
-                                                  complete["_loop_value"],
-                                                  modelgrid.minimize)
+                                                  values)
 
-    selected_row = int(candidates.iloc[2]["_loop_id"])
+    selected_row = int(candidates.iloc[selected_row]["_loop_id"])
     new_grid.loc[new_grid._loop_id == selected_row, "_loop_status"] = "pending"
     params = new_grid.loc[new_grid._loop_id == selected_row, :].to_dict(orient='records')[0]
     params = {k: v for k, v in params.items() if not k.startswith('_loop')}
