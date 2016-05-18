@@ -46,7 +46,7 @@ def new_model():
         db.session.add(ModelGrid(new_model_id, grid.to_json(), chooser, minimize))
         db.session.commit()
     except:
-        raise TypeError("Unable to add item to database.")
+        return jsonify(exception="Unable to add item to database.")
     return jsonify(id=new_model_id, grid_size=grid.shape, chooser=chooser, minimize=minimize)
 
 
@@ -80,7 +80,7 @@ def report_metric(id):
         modelgrid.grid = candidates.to_json()
         db.session.commit()
     except:
-        raise TypeError("Unable to find a model with uuid {} in the database.".format(id))
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
     return jsonify(status="ok")
 
 
