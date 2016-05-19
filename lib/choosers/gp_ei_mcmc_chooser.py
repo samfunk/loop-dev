@@ -22,10 +22,10 @@ class GPEIMCMC():
         self.max_ls = 2                             # Top-hat prior on length scales.
         self.mean = np.mean(values)                 # Initial mean.
 
-    def sample_hypers(complete, values):
+    def sample_hypers(self, complete, values):
         pass
 
-    def compute_ei(complete, pending, candidates, values):
+    def compute_ei(self, complete, pending, candidates, values):
         pass
 
 
