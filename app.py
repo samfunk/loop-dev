@@ -55,9 +55,9 @@ def report_metric(id):
     data = request.get_json() or {}
     if not data:
         return jsonify(exception="Invalid data POSTed to /report_metric")
-    if not data.get("value"):
+    if "value" not in data:
         return jsonify(exception="Must supply a <value> to /report_metric route")
-    if not data.get("loop_id"):
+    if "loop_id" not in data:
         return jsonify(exception="Must supply a <loop_id> to /report_metric route")
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
