@@ -36,7 +36,7 @@ def next(grid, candidates, pending, complete, completed_values):
 
     # Predict the marginal means and variances at candidates.
     mean, variance = rf.predict(_encode_categorical_df(candidates, grid))
-    best = np.max(completed_values)
+    best = np.min(completed_values)
 
     # Expected improvement
     # this is the part that I don't fully understand yet

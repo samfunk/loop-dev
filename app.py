@@ -95,7 +95,7 @@ def new_point(id):
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
         full_grid = modelgrid.get_grid()
         candidates, pending, complete = slice_df(full_grid)
-        values = complete["_loop_value"] * (-1)**modelgrid.minimize
+        values = complete["_loop_value"] * (-1)**(modelgrid.minimize + 1)
         if not candidates.shape[0]:
             return jsonify(exception="There are no more candidates left in the grid.")
     except:
