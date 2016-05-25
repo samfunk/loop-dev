@@ -31,10 +31,12 @@
     	</thead>
     	<tbody>
       {% for index, row in grid.sort_values(by="_loop_id").iterrows() %}
-        {% if isnan(row["_loop_value"]) %}
+        {% if row["_loop_status"] == "complete" %}
           <tr>
+        {% elif row["_loop_status"] == "pending" %}
+          <tr bgcolor="#ebff00">
         {% else %}
-          <tr bgcolor="#00FF00">
+          <tr bgcolor="#01ff00">
         {% endif %}
           {% for column in columns %}
             <td>{{ row[column] }}</td>
