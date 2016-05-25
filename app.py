@@ -37,7 +37,7 @@ def view_model(id):
         columns = list(grid.columns.values)
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    return render_template('model.html', grid=grid, uuid=str(id), columns=columns)
+    return render_template('model.html', modelgrid=modelgrid, uuid=str(id), columns=columns)
 
 
 @app.route("/new_model", methods=['POST'])

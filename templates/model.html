@@ -22,6 +22,7 @@
   <body>
     <h1>Search grid for model {{ uuid }}</h1>
     <table class="modelgrid">
+      <caption>Chooser {{ modelgrid.chooser }}; minimize = {{modelgrid.minimize}}</caption>
     	<thead>
     	<tr>
     		{% for column in columns %}
@@ -30,7 +31,7 @@
     	</tr>
     	</thead>
     	<tbody>
-      {% for index, row in grid.sort_values(by="_loop_id").iterrows() %}
+      {% for index, row in modelgrid.get_grid().sort_values(by="_loop_id").iterrows() %}
         {% if row["_loop_status"] == "complete" %}
           <tr bgcolor="#01ff00">
         {% elif row["_loop_status"] == "pending" %}
