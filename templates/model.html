@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Loop</title>
+    <style>
+    	.modelgrid {
+    		border:1px solid #C0C0C0;
+    		border-collapse:collapse;
+    		padding:5px;
+    	}
+    	.modelgrid th {
+    		border:1px solid #C0C0C0;
+    		padding:5px;
+    		background:#F0F0F0;
+    	}
+    	.modelgrid td {
+    		border:1px solid #C0C0C0;
+    		padding:5px;
+    	}
+    </style>
+  </head>
+  <body>
+    <h1>Search grid for model {{ uuid }}</h1>
+    <table class="modelgrid">
+    	<thead>
+    	<tr>
+    		{% for column in columns %}
+          <th>{{ column }}</th>
+        {% endfor %}
+    	</tr>
+    	</thead>
+    	<tbody>
+      {% for index, row in grid.sort_values(by="_loop_id").iterrows() %}
+        {% if isnan(row["_loop_value"]) %}
+          <tr>
+        {% else %}
+          <tr bgcolor="#00FF00">
+        {% endif %}
+          {% for column in columns %}
+            <td>{{ row[column] }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    	</tbody>
+    </table>
+
+  </body>
+</html>

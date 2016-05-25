@@ -29,6 +29,17 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/model/<uuid:id>', methods=['GET'])
+def view_model(id):
+    try:
+        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+        grid = modelgrid.get_grid()
+        columns = list(grid.columns.values)
+    except:
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
+    return render_template('model.html', grid=grid, uuid=str(id), columns=columns, isnan=math.isnan)
+
+
 @app.route("/new_model", methods=['POST'])
 def new_model():
     data = request.get_json() or {}
