@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Loop</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  </head>
-  <body>
+{% extends "base.html" %}
+
+{% block content %}
     <h1>Search grid for model {{ uuid }}</h1>
     <table class="modelgrid">
       <caption>Chooser {{ modelgrid.chooser }}; minimize = {{modelgrid.minimize}}</caption>
@@ -31,6 +27,5 @@
       {% endfor %}
     	</tbody>
     </table>
+{% endblock %}
 
-  </body>
-</html>
