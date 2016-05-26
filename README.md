@@ -1,4 +1,4 @@
-# ![avant logo](https://avantprod.global.ssl.fastly.net/assets/v3/home2/logo-icon-dark-ddd7488b0288497a8f9ea2c5aa24f65d.png) Loop
+# ![avant logo](https://avantprod.global.ssl.fastly.net/assets/v3/home2/logo-icon-dark-ddd7488b0288497a8f9ea2c5aa24f65d.png) Loop [![Build Status](https://travis-ci.org/kirillseva/loop.svg?branch=master)](https://travis-ci.org/kirillseva/loop)
 
 ## Hyperparameter optimization as a service
 
