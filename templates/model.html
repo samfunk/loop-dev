@@ -3,15 +3,18 @@
 {% block content %}
     <h1>Search grid for model {{ uuid }}</h1>
     <table class="modelgrid">
-      <caption>Chooser {{ modelgrid.chooser }}; minimize = {{modelgrid.minimize}}</caption>
-    	<thead>
-    	<tr>
-    		{% for column in columns %}
+    <caption>
+      Chooser = {{ modelgrid.chooser }};
+      minimize = {{modelgrid.minimize}}
+    </caption>
+    <thead>
+      <tr>
+        {% for column in columns %}
           <th>{{ column }}</th>
         {% endfor %}
-    	</tr>
-    	</thead>
-    	<tbody>
+      </tr>
+    </thead>
+    <tbody>
       {% for index, row in modelgrid.get_grid().sort_values(by="_loop_id").iterrows() %}
         {% if row["_loop_status"] == "complete" %}
           <tr bgcolor="#01ff00">
@@ -25,7 +28,7 @@
           {% endfor %}
         </tr>
       {% endfor %}
-    	</tbody>
-    </table>
+    </tbody>
+  </table>
 {% endblock %}
 

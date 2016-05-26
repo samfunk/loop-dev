@@ -26,7 +26,8 @@ from models import *
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    modelgrids = db.session.query(ModelGrid).all()
+    return render_template('index.html', modelgrids=modelgrids)
 
 
 @app.route('/model/<uuid:id>', methods=['GET'])
