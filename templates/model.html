@@ -2,22 +2,7 @@
 <html>
   <head>
     <title>Loop</title>
-    <style>
-    	.modelgrid {
-    		border:1px solid #C0C0C0;
-    		border-collapse:collapse;
-    		padding:5px;
-    	}
-    	.modelgrid th {
-    		border:1px solid #C0C0C0;
-    		padding:5px;
-    		background:#F0F0F0;
-    	}
-    	.modelgrid td {
-    		border:1px solid #C0C0C0;
-    		padding:5px;
-    	}
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
     <h1>Search grid for model {{ uuid }}</h1>
