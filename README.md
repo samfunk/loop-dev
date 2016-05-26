@@ -16,6 +16,10 @@ $ pyenv local 3.5.1
 $ pyenv virtualenv loop
 ```
 
+```
+
+```
+
 ### First Steps
 
 ```sh
@@ -31,4 +35,12 @@ $ python manage.py db upgrade
 
 ### Run
 
-Fill in later
+
+
+### Tests
+
+Tests go in /tests and can be run with
+
+```sh
+$ python -m unittest discover tests
+```

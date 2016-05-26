@@ -1,7 +1,7 @@
 import unittest
 import pandas
 
-from utils import make_grid
+from lib.make_grid import make_grid
 
 
 class MakeGridTestCase(unittest.TestCase):
@@ -13,7 +13,7 @@ class MakeGridTestCase(unittest.TestCase):
                               {'max': 1, 'name': 'f', 'min': 0, 'type': 'float', 'num_points': 4}]}
         grid = make_grid(payload)
         self.assertTrue(isinstance(grid, pandas.core.frame.DataFrame))
-        self.assertEqual(grid.shape, (24, 3))
+        self.assertEqual(grid.shape, (24, 7))
 
 
 if __name__ == '__main__':
