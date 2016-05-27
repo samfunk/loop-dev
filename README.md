@@ -16,8 +16,16 @@ $ pyenv local 3.5.1
 $ pyenv virtualenv loop
 ```
 
-```
-
+Or, if the above is not working, run the following commands in
+the directory above where you git cloned this repo.
+```sh
+$ brew install pyenv pyenv-virtualenv
+$ pip install --upgrade pip
+$ pyenv install 3.5.1
+$ mkdir virtualenvs #assuming you don't already have a virtualenv directory
+$ virtualenv -p /Users/{{username}}/.pyenv/versions/3.5.1/bin/python3.5 virtualenvs/loop
+$ source virtualenvs/loop/bin/activate
+$ cd loop
 ```
 
 ### First Steps
