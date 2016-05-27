@@ -34,11 +34,11 @@ def index():
 def view_model(id):
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
-        grid = modelgrid.get_grid()
+        grid = modelgrid.get_grid().sort_values(by="_loop_id")
         columns = list(grid.columns.values)
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    return render_template('model.html', modelgrid=modelgrid, uuid=str(id), columns=columns)
+    return render_template('model.html', modelgrid=modelgrid, grid=grid, uuid=str(id), columns=columns)
 
 
 @app.route("/new_model", methods=['POST'])
