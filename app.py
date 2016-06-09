@@ -137,5 +137,15 @@ def new_point(id):
         return jsonify(exception=error_string)
     return jsonify(params=params, loop_id=selected_row)
 
+
+@app.route("/grid/<uuid:id>", methods=['GET'])
+def view_grid(id):
+    try:
+        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+    except:
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
+    return jsonify(grid=modelgrid.get_grid().to_json())
+
+
 if __name__ == '__main__':
     app.run()
