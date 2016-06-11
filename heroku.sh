@@ -1,2 +1,2 @@
 #!/bin/bash
-gunicorn app:app
+gunicorn -t 60 app:app
