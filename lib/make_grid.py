@@ -10,8 +10,14 @@ def make_grid(payload):
         _check_presense(["name", "type"], variable)
         if variable.get("type") == "int":
             _check_inclusion(["min", "max"], variable)
+            if variable.get("num_points"):
+                grid_points = np.linspace(variable.get("min"),
+                                          variable.get("max"),
+                                          variable.get("num_points")).tolist()
+            else:
+                grid_points = list(range(variable.get("min"), variable.get("max") + 1))
             values.append({"name": variable.get("name"),
-                           "values": list(range(variable.get("min"), variable.get("max") + 1))})
+                           "values": grid_points})
         elif variable.get("type") == "float":
             _check_inclusion(["min", "max", "num_points"], variable)
             values.append({"name": variable.get("name"),
