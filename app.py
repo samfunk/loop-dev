@@ -144,7 +144,7 @@ def view_grid(id):
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    return jsonify(grid=modelgrid.get_grid().to_json())
+    return jsonify(grid=modelgrid.get_grid().to_json(), minimize=modelgrid.minimize)
 
 
 if __name__ == '__main__':
