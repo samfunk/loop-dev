@@ -140,11 +140,23 @@ def new_point(id):
 
 @app.route("/grid/<uuid:id>", methods=['GET'])
 def view_grid(id):
+    ALLOWED_SUBSET_TYPES = [
+        "complete",
+        "pending",
+        "candidate"
+    ]
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    return jsonify(grid=modelgrid.get_grid().to_json(), minimize=modelgrid.minimize)
+    grid = modelgrid.get_grid()
+    subset = request.args.get('subset')
+    if subset:
+        if subset in ALLOWED_SUBSET_TYPES:
+            grid = grid.loc[grid._loop_status == subset, :]
+        else:
+            return jsonify(exception="Unknown subset type <{}>".format(subset))
+    return jsonify(grid=grid.to_json(), minimize=modelgrid.minimize)
 
 
 if __name__ == '__main__':
