@@ -1,15 +1,143 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Loop</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.min.css') }}">
   </head>
-  <body>
-    <div id="content">
-      <div class="container">
-        {% block content %}{% endblock %}
+  <body class = "nav-sm">
+    <!-- {% block content %}{% endblock %} -->
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="{{ url_for('index') }}" class="site_title"><img src="{{ url_for('static', filename='img/avant-logo-dark.png') }}" title="<3 Avant" height = "30px" /><span> Loop</span></a>
+            </div>
+
+            <div class="clearfix"></div>
+            <br />
+
+            <!-- sidebar menu -->
+            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <div class="menu_section">
+              </div>
+            </div>
+            <!-- /sidebar menu -->
+          </div>
+        </div>
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Loop <small>your friendly neighborhood hyperparameter optimizer</small></h3>
+              </div>
+
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Have a model id?..">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Go!</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Experiments</h2>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <p>Showing 10 latest experiments</p>
+
+                    <!-- start project list -->
+                    <table class="table table-striped projects">
+                      <thead>
+                        <tr>
+                          <th style="width: 1%">uuid</th>
+                          <th style="width: 20%">Name</th>
+                          <th>Progress</th>
+                          <th>Objective</th>
+                          <th>Results</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>#</td>
+                          <td>
+                            <a>Default/en-US/4.2.0</a>
+                            <br />
+                            <small>Created 01.01.2015</small>
+                          </td>
+                          <td class="project_progress">
+                            <div class="progress progress_sm">
+                              <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="77"></div>
+                            </div>
+                            <small>77% Complete</small>
+                          </td>
+                          <td>
+                            <button type="button" class="btn btn-success btn-xs">Success</button>
+                          </td>
+                          <td>
+                            <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
+                            <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>
+                            <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <!-- end project list -->
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /page content -->
+
+        <!-- footer content -->
+        <footer>
+          <div class="pull-right">
+            Loop - Bayesian hyperparameter optimization service by <a href="https://avant.com">Avant</a>
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /footer content -->
       </div>
     </div>
+
+    <!-- scripts -->
+    <!-- jQuery -->
+    <script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
+    <!-- Bootstrap -->
+    <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/bootstrap-progressbar.min.js') }}"></script>
+    <!-- FastClick -->
+    <script src="{{ url_for('static', filename='js/vendor/fastclick.js') }}"></script>
+    <!-- NProgress -->
+    <script src="{{ url_for('static', filename='js/vendor/nprogress.js') }}"></script>
+    <!-- ECharts -->
+    <script src="{{ url_for('static', filename='js/vendor/echarts.min.js') }}"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
   </body>
 </html>
