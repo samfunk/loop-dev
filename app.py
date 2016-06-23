@@ -51,11 +51,12 @@ def new_model():
         new_model_id = uuid.uuid4()
         minimize = data.get("minimize") or False
         chooser = data.get("chooser") or DEFAULT_CHOOSER
+        name = data.get("name")
         if chooser not in list(LIST_OF_CHOOSERS.keys()):
             error_string = """The chooser <{}> that you've supplied is not yet implemented.
                 You can find the list of available choosers by querying /choosers endpoint."""
             return jsonify(exception=error_string.format(chooser))
-        db.session.add(ModelGrid(new_model_id, grid.to_json(), chooser, minimize))
+        db.session.add(ModelGrid(new_model_id, grid.to_json(), chooser, name, minimize))
         db.session.commit()
     except:
         return jsonify(exception="Unable to add item to database.")
