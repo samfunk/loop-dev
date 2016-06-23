@@ -44,36 +44,41 @@
               <table class="table table-striped projects">
                 <thead>
                   <tr>
-                    <th style="width: 1%">uuid</th>
+                    <th style="width: 20%">uuid</th>
                     <th style="width: 20%">Name</th>
                     <th>Progress</th>
-                    <th>Objective</th>
+                    <th>Best Result</th>
                     <th>Results</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>#</td>
-                    <td>
-                      <a>Default/en-US/4.2.0</a>
-                      <br />
-                      <small>Created 01.01.2015</small>
-                    </td>
-                    <td class="project_progress">
-                      <div class="progress progress_sm">
-                        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="77"></div>
-                      </div>
-                      <small>77% Complete</small>
-                    </td>
-                    <td>
-                      <button type="button" class="btn btn-success btn-xs">Success</button>
-                    </td>
-                    <td>
-                      <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
-                      <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>
-                      <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>
-                    </td>
-                  </tr>
+                  {% for modelgrid in modelgrids %}
+                    {% set grid = modelgrid.get_grid() %}
+                    {% set numrows = grid.shape[0] %}
+                    {% set numcomplete = 0 %}
+                    <tr>
+                      <td>{{ modelgrid.id }}</td>
+                      <td>
+                        <a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.name }}</a>
+                        <br />
+                        <small>Last updated {{ modelgrid.updated_at.strftime("%b %d %Y %H:%M:%S") }}</small>
+                      </td>
+                      <td class="project_progress">
+                        <div class="progress progress_sm">
+                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="0"></div>
+                        </div>
+                        <small>{{numcomplete}} / {{numrows}} complete</small>
+                      </td>
+                      <td>
+                        <i class="success fa fa-long-arrow-{{'down' if modelgrid.minimize else 'up'}}"></i>
+                      </td>
+                      <td>
+                        <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
+                        <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>
+                        <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
                 </tbody>
               </table>
               <!-- end project list -->
