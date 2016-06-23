@@ -27,7 +27,7 @@ from models import *
 @app.route('/', methods=['GET'])
 def index():
     try:
-        modelgrids = db.session.query(ModelGrid).order_by(ModelGrid.created_at).limit(10)
+        modelgrids = db.session.query(ModelGrid).order_by(ModelGrid.updated_at).limit(10)
     except:
         return jsonify(exception="Cannot connect to the database.")
     return render_template('index.html', modelgrids=modelgrids)

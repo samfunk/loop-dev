@@ -1,6 +1,7 @@
 import pandas as pd
 from datetime import datetime
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import JSONB
 
 from app import db
@@ -9,14 +10,15 @@ from app import db
 class ModelGrid(db.Model):
     __tablename__ = 'model_grids'
 
-    id = db.Column(db.String(), primary_key=True)
+    id = db.Column(db.String(), primary_key=True, index=True)
     grid = db.Column(JSONB)
     name = db.Column(db.String())
     chooser = db.Column(db.String())
     minimize = db.Column(db.Boolean)
+    submissions = relationship("Submission")
 
     created_at = db.Column(DateTime, default=datetime.utcnow)
-    updated_at = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    updated_at = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)
 
     def __init__(self, id, grid, chooser, name=None, minimize=False):
         self.id = id
@@ -27,6 +29,27 @@ class ModelGrid(db.Model):
 
     def get_grid(self):
         return pd.read_json(self.grid)
+
+    def __repr__(self):
+        return '<model_grid {} of cardinality {}>'.format(self.id, pd.read_json(self.grid).shape)
+
+
+class Submission(db.Model):
+    __tablename__ = 'submissions'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    model_id = db.Column(db.String(), ForeignKey('model_grids.id'), index=True)
+    value = db.Column(db.Float())
+
+    created_at = db.Column(DateTime, default=datetime.utcnow)
+    updated_at = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __init__(self, model_id, value):
+        self.id = id
+        self.name = name if name else id
+        self.grid = grid
+        self.minimize = minimize
+        self.chooser = chooser
 
     def __repr__(self):
         return '<model_grid {} of cardinality {}>'.format(self.id, pd.read_json(self.grid).shape)
