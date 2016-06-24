@@ -165,5 +165,20 @@ def view_grid(id):
     return jsonify(grid=grid.to_json(), minimize=modelgrid.minimize)
 
 
+@app.route("/last_values/<uuid:id>", methods=['GET'])
+def last_values(id):
+    ALLOWED_SUBSET_TYPES = [
+        "complete",
+        "pending",
+        "candidate"
+    ]
+    try:
+        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+    except:
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
+    values = [x.value for x in modelgrid.submissions]
+    return jsonify(values=values[-9:])
+
+
 if __name__ == '__main__':
     app.run()

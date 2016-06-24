@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <!-- <h1>Welcome to Loop</h1>
-
-  {% for modelgrid in modelgrids %}
-  <div>
-    <a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{modelgrid.id}}</a>
-  </div>
-  {% endfor %} -->
+  <style>
+    /*.tooltip-class {
+      width: 500px;
+    }*/
+  </style>
   <div class="right_col" role="main">
     <div class="">
       <div class="page-title">
@@ -58,11 +56,11 @@
                     {% set submissions = modelgrid.submissions %}
                     {% set numcomplete = submissions|length %}
                     {% set values = submissions|map(attribute='value') %}
-                    {% set best_value = modelgrid.best_value()|round(2) if modelgrid.best_value() != "TBD" else "TBD" %}
+                    {% set best_value = modelgrid.best_value() if modelgrid.best_value() != "TBD" else "TBD" %}
                     <tr>
                       <td><a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.id }}</a></td>
                       <td>
-                        <a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.name }}</a>
+                        <a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.name|truncate(20, true) }}</a>
                         <br />
                         <small>Last updated {{ modelgrid.updated_at.strftime("%b %d %Y %H:%M:%S") }}</small>
                       </td>
@@ -77,9 +75,24 @@
                         <i class="success fa fa-long-arrow-{{'down' if modelgrid.minimize else 'up'}}"></i>
                       </td>
                       <td>
-                        <div id = "sparkline-{{modelgrid.id}}"></div>
+                        <span id="sparkline-{{modelgrid.id}}" style="height: 160px;">
+                          <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                        </span>
                       </td>
                     </tr>
+                    <script>
+                      $.get('/last_values/{{modelgrid.id}}').then(function(datum) {
+                        $("#sparkline-{{modelgrid.id}}").sparkline(datum.values, {
+                          type: 'bar',
+                          height: '30',
+                          barSpacing: 2,
+                          barWidth: 5,
+                          barColor: '#26B99A',
+                          negBarColor: '#26B99A',
+                          tooltipFormat: "{{ '{{value:val}}' }}"
+                        });
+                      });
+                    </script>
                   {% endfor %}
                 </tbody>
               </table>
