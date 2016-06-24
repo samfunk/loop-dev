@@ -22,7 +22,7 @@ class ModelGrid(db.Model):
 
     def __init__(self, id, grid, chooser, name=None, minimize=False):
         self.id = id
-        self.name = name if name else "A model has no name"
+        self.name = name
         self.grid = grid
         self.minimize = minimize
         self.chooser = chooser
@@ -36,7 +36,7 @@ class ModelGrid(db.Model):
         try:
             best = which(values)
         except:
-            best = "TBD"
+            best = None
         return best
 
     def __repr__(self):
@@ -48,16 +48,19 @@ class Submission(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     model_id = db.Column(db.String(), ForeignKey('model_grids.id'), index=True)
+    loop_id = db.Column(db.Integer())
     value = db.Column(db.Float())
 
     created_at = db.Column(DateTime, default=datetime.utcnow)
     updated_at = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    def __init__(self, model_id, value):
+    def __init__(self, model_id, loop_id, value):
+        self.loop_id = loop_id
         self.model_id = model_id
         self.value = value
 
     def __repr__(self):
-        return '<Submission id: <{}> for model grid {} of value {}>'.format(self.id,
-                                                                            self.model_id,
-                                                                            self.value)
+        return '<Submission id: <{}> for model grid {} of value {} for row {}>'.format(self.id,
+                                                                                       self.model_id,
+                                                                                       self.value,
+                                                                                       self.loop_id)

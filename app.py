@@ -9,6 +9,7 @@ from flask import Flask, render_template, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.uuid import FlaskUUID
 from collections import Counter
+from sqlalchemy import desc
 
 from lib.make_grid import make_grid
 from lib.choosers import *
@@ -27,7 +28,7 @@ from models import *
 @app.route('/', methods=['GET'])
 def index():
     try:
-        modelgrids = db.session.query(ModelGrid).order_by(ModelGrid.updated_at).limit(10)
+        modelgrids = db.session.query(ModelGrid).order_by(desc(ModelGrid.updated_at)).limit(10)
     except:
         return jsonify(exception="Cannot connect to the database.")
     return render_template('index.html', modelgrids=modelgrids)
@@ -54,7 +55,7 @@ def new_model():
         new_model_id = uuid.uuid4()
         minimize = data.get("minimize") or False
         chooser = data.get("chooser") or DEFAULT_CHOOSER
-        name = data.get("name")
+        name = data.get("name") or "An experiment has no name"
         if chooser not in list(LIST_OF_CHOOSERS.keys()):
             error_string = """The chooser <{}> that you've supplied is not yet implemented.
                 You can find the list of available choosers by querying /choosers endpoint."""
@@ -95,7 +96,7 @@ def report_metric(id):
 
         modelgrid.grid = candidates.to_json()
         # also record a submission
-        db.session.add(Submission(str(id), float(data.get("value"))))
+        db.session.add(Submission(str(id), int(data.get('loop_id')), float(data.get("value"))))
         db.session.commit()
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
@@ -178,6 +179,16 @@ def last_values(id):
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
     values = [x.value for x in modelgrid.submissions]
     return jsonify(values=values[-20:])
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':

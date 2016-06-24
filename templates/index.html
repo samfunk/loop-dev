@@ -17,7 +17,11 @@
         <div class="title_right">
           <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Have a model id?.." id="model-id-textfield">
+              <input type="text"
+                     class="form-control"
+                     placeholder="Have a model id?.."
+                     id="model-id-textfield"
+                     onkeydown = "if (event.keyCode == 13) document.getElementById('goto-button').click()">
               <span class="input-group-btn">
                 <button class="btn btn-default" id="goto-button" type="button">Go!</button>
               </span>
@@ -57,11 +61,11 @@
                     {% set submissions = modelgrid.submissions %}
                     {% set numcomplete = submissions|length %}
                     {% set values = submissions|map(attribute='value') %}
-                    {% set best_value = modelgrid.best_value() if modelgrid.best_value() != "TBD" else "TBD" %}
+                    {% set best_value = modelgrid.best_value() if modelgrid.best_value() else "No model runs complete yet" %}
                     <tr>
                       <td><a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.id }}</a></td>
                       <td>
-                        <a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.name|truncate(20, true) }}</a>
+                        <a href="{{ url_for('.view_model', id=modelgrid.id) }}" data-toggle="tooltip" data-placement="top" title="{{ modelgrid.name }}">{{ modelgrid.name|truncate(20, true) }}</a>
                         <br />
                         <small>Last updated {{ modelgrid.updated_at.strftime("%b %d %Y %H:%M:%S") }}</small>
                       </td>
