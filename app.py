@@ -177,7 +177,7 @@ def last_values(id):
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
     values = [x.value for x in modelgrid.submissions]
-    return jsonify(values=values[-9:])
+    return jsonify(values=values[-20:])
 
 
 if __name__ == '__main__':

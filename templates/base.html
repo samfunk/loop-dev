@@ -12,17 +12,19 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/tooltip.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.min.css') }}">
 
     <!-- scripts -->
     <!-- jQuery -->
     <script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vendor/jquery.sparkline.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/vendor/tooltip.min.js') }}"></script>
   </head>
   <body class = "nav-sm">
     <div class="container body">
       <div class="main_container">
-        <div class="col-md-3 left_col">
+        <div class="col-md-3 left_col menu_fixed">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
               <a href="{{ url_for('index') }}" class="site_title"><img src="{{ url_for('static', filename='img/avant-logo-dark.png') }}" title="<3 Avant" height = "30px" /><span> Loop</span></a>

@@ -2,9 +2,10 @@
 
 {% block content %}
   <style>
-    /*.tooltip-class {
-      width: 500px;
-    }*/
+    .jqstooltip{
+      box-sizing: content-box;
+      width: 100px !important;
+    }
   </style>
   <div class="right_col" role="main">
     <div class="">
@@ -16,9 +17,9 @@
         <div class="title_right">
           <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Have a model id?..">
+              <input type="text" class="form-control" placeholder="Have a model id?.." id="model-id-textfield">
               <span class="input-group-btn">
-                <button class="btn btn-default" type="button">Go!</button>
+                <button class="btn btn-default" id="goto-button" type="button">Go!</button>
               </span>
             </div>
           </div>
@@ -88,8 +89,7 @@
                           barSpacing: 2,
                           barWidth: 5,
                           barColor: '#26B99A',
-                          negBarColor: '#26B99A',
-                          tooltipFormat: "{{ '{{value:val}}' }}"
+                          negBarColor: '#26B99A'
                         });
                       });
                     </script>
@@ -103,5 +103,11 @@
         </div>
       </div>
     </div>
+    <script>
+      document.getElementById("goto-button").addEventListener("click", function() {
+        var text = document.getElementById("model-id-textfield").value;
+        window.location = '/model/' + text;
+      });
+    </script>
   </div>
 {% endblock %}
