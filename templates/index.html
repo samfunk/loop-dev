@@ -55,9 +55,12 @@
                   {% for modelgrid in modelgrids %}
                     {% set grid = modelgrid.get_grid() %}
                     {% set numrows = grid.shape[0] %}
-                    {% set numcomplete = 0 %}
+                    {% set submissions = modelgrid.submissions %}
+                    {% set numcomplete = submissions|length %}
+                    {% set values = submissions|map(attribute='value') %}
+                    {% set best_value = modelgrid.best_value()|round(2) if modelgrid.best_value() != "TBD" else "TBD" %}
                     <tr>
-                      <td>{{ modelgrid.id }}</td>
+                      <td><a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.id }}</a></td>
                       <td>
                         <a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.name }}</a>
                         <br />
@@ -65,17 +68,16 @@
                       </td>
                       <td class="project_progress">
                         <div class="progress progress_sm">
-                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="0"></div>
+                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="{{ (numcomplete/2)|round }}"></div>
                         </div>
                         <small>{{numcomplete}} / {{numrows}} complete</small>
                       </td>
                       <td>
+                        {{ best_value }}
                         <i class="success fa fa-long-arrow-{{'down' if modelgrid.minimize else 'up'}}"></i>
                       </td>
                       <td>
-                        <a href="#" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
-                        <a href="#" class="btn btn-info btn-xs"><i class="fa fa-pencil"></i> Edit </a>
-                        <a href="#" class="btn btn-danger btn-xs"><i class="fa fa-trash-o"></i> Delete </a>
+                        <div id = "sparkline-{{modelgrid.id}}"></div>
                       </td>
                     </tr>
                   {% endfor %}

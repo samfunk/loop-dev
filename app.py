@@ -94,6 +94,8 @@ def report_metric(id):
                            "_loop_duration"] = data.get("duration")
 
         modelgrid.grid = candidates.to_json()
+        # also record a submission
+        db.session.add(Submission(str(id), float(data.get("value"))))
         db.session.commit()
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))

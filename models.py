@@ -15,20 +15,29 @@ class ModelGrid(db.Model):
     name = db.Column(db.String())
     chooser = db.Column(db.String())
     minimize = db.Column(db.Boolean)
-    submissions = relationship("Submission")
+    submissions = relationship("Submission", backref="model_grids")
 
     created_at = db.Column(DateTime, default=datetime.utcnow)
     updated_at = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)
 
     def __init__(self, id, grid, chooser, name=None, minimize=False):
         self.id = id
-        self.name = name if name else id
+        self.name = name if name else "A model has no name"
         self.grid = grid
         self.minimize = minimize
         self.chooser = chooser
 
     def get_grid(self):
         return pd.read_json(self.grid)
+
+    def best_value(self):
+        values = [x.value for x in self.submissions]
+        which = min if self.minimize else max
+        try:
+            best = which(values)
+        except:
+            best = "TBD"
+        return best
 
     def __repr__(self):
         return '<model_grid {} of cardinality {}>'.format(self.id, pd.read_json(self.grid).shape)
@@ -45,11 +54,10 @@ class Submission(db.Model):
     updated_at = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __init__(self, model_id, value):
-        self.id = id
-        self.name = name if name else id
-        self.grid = grid
-        self.minimize = minimize
-        self.chooser = chooser
+        self.model_id = model_id
+        self.value = value
 
     def __repr__(self):
-        return '<model_grid {} of cardinality {}>'.format(self.id, pd.read_json(self.grid).shape)
+        return '<Submission id: <{}> for model grid {} of value {}>'.format(self.id,
+                                                                            self.model_id,
+                                                                            self.value)
