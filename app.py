@@ -9,6 +9,7 @@ from flask import Flask, render_template, request, jsonify
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.uuid import FlaskUUID
 from collections import Counter
+from sqlalchemy import desc
 
 from lib.make_grid import make_grid
 from lib.choosers import *
@@ -26,7 +27,10 @@ from models import *
 
 @app.route('/', methods=['GET'])
 def index():
-    modelgrids = db.session.query(ModelGrid).all()
+    try:
+        modelgrids = db.session.query(ModelGrid).order_by(desc(ModelGrid.updated_at)).limit(10)
+    except:
+        return jsonify(exception="Cannot connect to the database.")
     return render_template('index.html', modelgrids=modelgrids)
 
 
@@ -34,11 +38,18 @@ def index():
 def view_model(id):
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
-        grid = modelgrid.get_grid().sort_values(by="_loop_id")
-        columns = list(grid.columns.values)
+        grid = modelgrid.get_grid()
+        complete = grid.loc[grid._loop_status == "complete", :]
+        complete = complete.sort_values(by="_loop_value", ascending=modelgrid.minimize)
+        pending = grid.loc[grid._loop_status == "pending", :]
+        columns = [x for x in list(grid.columns.values) if not x.startswith("_loop")]
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    return render_template('model.html', modelgrid=modelgrid, grid=grid, uuid=str(id), columns=columns)
+    return render_template('model.html',
+                           modelgrid=modelgrid,
+                           complete=complete,
+                           pending=pending,
+                           columns=columns)
 
 
 @app.route("/new_model", methods=['POST'])
@@ -51,11 +62,12 @@ def new_model():
         new_model_id = uuid.uuid4()
         minimize = data.get("minimize") or False
         chooser = data.get("chooser") or DEFAULT_CHOOSER
+        name = data.get("name") or "An experiment has no name"
         if chooser not in list(LIST_OF_CHOOSERS.keys()):
             error_string = """The chooser <{}> that you've supplied is not yet implemented.
                 You can find the list of available choosers by querying /choosers endpoint."""
             return jsonify(exception=error_string.format(chooser))
-        db.session.add(ModelGrid(new_model_id, grid.to_json(), chooser, minimize))
+        db.session.add(ModelGrid(new_model_id, grid.to_json(), chooser, name, minimize))
         db.session.commit()
     except:
         return jsonify(exception="Unable to add item to database.")
@@ -90,6 +102,8 @@ def report_metric(id):
                            "_loop_duration"] = data.get("duration")
 
         modelgrid.grid = candidates.to_json()
+        # also record a submission
+        db.session.add(Submission(str(id), int(data.get('loop_id')), float(data.get("value"))))
         db.session.commit()
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
@@ -157,6 +171,26 @@ def view_grid(id):
         else:
             return jsonify(exception="Unknown subset type <{}>".format(subset))
     return jsonify(grid=grid.to_json(), minimize=modelgrid.minimize)
+
+
+@app.route("/last_values/<uuid:id>", methods=['GET'])
+def last_values(id):
+    try:
+        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+    except:
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
+    values = [x.value for x in modelgrid.submissions]
+    return jsonify(values=values[-20:])
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
