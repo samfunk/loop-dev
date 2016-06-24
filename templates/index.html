@@ -1,119 +1,78 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <style>
-    .jqstooltip{
-      box-sizing: content-box;
-      width: 100px !important;
-      opacity: 0.8;
-      filter: alpha(opacity=80);
-    }
-  </style>
-  <div class="right_col" role="main">
-    <div class="">
-      <div class="page-title">
-        <div class="title_left">
-          <h3>Loop <small>your friendly neighborhood hyperparameter optimizer</small></h3>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>Experiments</h2>
+          <div class="clearfix"></div>
         </div>
+        <div class="x_content">
 
-        <div class="title_right">
-          <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-            <div class="input-group">
-              <input type="text"
-                     class="form-control"
-                     placeholder="Have a model id?.."
-                     id="model-id-textfield"
-                     onkeydown = "if (event.keyCode == 13) document.getElementById('goto-button').click()">
-              <span class="input-group-btn">
-                <button class="btn btn-default" id="goto-button" type="button">Go!</button>
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+          <p>Showing 10 latest experiments</p>
 
-      <div class="clearfix"></div>
+          <!-- start project list -->
+          <table class="table table-striped projects">
+            <thead>
+              <tr>
+                <th style="width: 20%">uuid</th>
+                <th style="width: 20%">Name</th>
+                <th>Progress</th>
+                <th>Best Result</th>
+                <th>Results</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for modelgrid in modelgrids %}
+                {% set grid = modelgrid.get_grid() %}
+                {% set numrows = grid.shape[0] %}
+                {% set submissions = modelgrid.submissions %}
+                {% set numcomplete = submissions|length %}
+                {% set values = submissions|map(attribute='value') %}
+                {% set best_value = modelgrid.best_value() if modelgrid.best_value() else "No model runs complete yet" %}
+                <tr>
+                  <td><a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.id }}</a></td>
+                  <td>
+                    <a href="{{ url_for('.view_model', id=modelgrid.id) }}" data-toggle="tooltip" data-placement="top" title="{{ modelgrid.name }}">{{ modelgrid.name|truncate(20, true) }}</a>
+                    <br />
+                    <small>Last updated {{ modelgrid.updated_at.strftime("%b %d %Y %H:%M:%S") }}</small>
+                  </td>
+                  <td class="project_progress">
+                    <div class="progress progress_sm">
+                      <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="{{ (numcomplete/2)|round }}"></div>
+                    </div>
+                    <small>{{numcomplete}} / {{numrows}} complete</small>
+                  </td>
+                  <td>
+                    {{ best_value }}
+                    <i class="success fa fa-long-arrow-{{'down' if modelgrid.minimize else 'up'}}"></i>
+                  </td>
+                  <td>
+                    <span id="sparkline-{{modelgrid.id}}" style="height: 160px;">
+                      <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                    </span>
+                  </td>
+                </tr>
+                <script>
+                  $.get('/last_values/{{modelgrid.id}}').then(function(datum) {
+                    $("#sparkline-{{modelgrid.id}}").sparkline(datum.values, {
+                      type: 'bar',
+                      height: '30',
+                      barSpacing: 2,
+                      barWidth: 5,
+                      barColor: '#26B99A',
+                      negBarColor: '#26B99A'
+                    });
+                  });
+                </script>
+              {% endfor %}
+            </tbody>
+          </table>
+          <!-- end project list -->
 
-      <div class="row">
-        <div class="col-md-12">
-          <div class="x_panel">
-            <div class="x_title">
-              <h2>Experiments</h2>
-              <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-
-              <p>Showing 10 latest experiments</p>
-
-              <!-- start project list -->
-              <table class="table table-striped projects">
-                <thead>
-                  <tr>
-                    <th style="width: 20%">uuid</th>
-                    <th style="width: 20%">Name</th>
-                    <th>Progress</th>
-                    <th>Best Result</th>
-                    <th>Results</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for modelgrid in modelgrids %}
-                    {% set grid = modelgrid.get_grid() %}
-                    {% set numrows = grid.shape[0] %}
-                    {% set submissions = modelgrid.submissions %}
-                    {% set numcomplete = submissions|length %}
-                    {% set values = submissions|map(attribute='value') %}
-                    {% set best_value = modelgrid.best_value() if modelgrid.best_value() else "No model runs complete yet" %}
-                    <tr>
-                      <td><a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.id }}</a></td>
-                      <td>
-                        <a href="{{ url_for('.view_model', id=modelgrid.id) }}" data-toggle="tooltip" data-placement="top" title="{{ modelgrid.name }}">{{ modelgrid.name|truncate(20, true) }}</a>
-                        <br />
-                        <small>Last updated {{ modelgrid.updated_at.strftime("%b %d %Y %H:%M:%S") }}</small>
-                      </td>
-                      <td class="project_progress">
-                        <div class="progress progress_sm">
-                          <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="{{ (numcomplete/2)|round }}"></div>
-                        </div>
-                        <small>{{numcomplete}} / {{numrows}} complete</small>
-                      </td>
-                      <td>
-                        {{ best_value }}
-                        <i class="success fa fa-long-arrow-{{'down' if modelgrid.minimize else 'up'}}"></i>
-                      </td>
-                      <td>
-                        <span id="sparkline-{{modelgrid.id}}" style="height: 160px;">
-                          <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
-                        </span>
-                      </td>
-                    </tr>
-                    <script>
-                      $.get('/last_values/{{modelgrid.id}}').then(function(datum) {
-                        $("#sparkline-{{modelgrid.id}}").sparkline(datum.values, {
-                          type: 'bar',
-                          height: '30',
-                          barSpacing: 2,
-                          barWidth: 5,
-                          barColor: '#26B99A',
-                          negBarColor: '#26B99A'
-                        });
-                      });
-                    </script>
-                  {% endfor %}
-                </tbody>
-              </table>
-              <!-- end project list -->
-
-            </div>
-          </div>
         </div>
       </div>
     </div>
-    <script>
-      document.getElementById("goto-button").addEventListener("click", function() {
-        var text = document.getElementById("model-id-textfield").value;
-        window.location = '/model/' + text;
-      });
-    </script>
   </div>
 {% endblock %}

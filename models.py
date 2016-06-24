@@ -15,7 +15,7 @@ class ModelGrid(db.Model):
     name = db.Column(db.String())
     chooser = db.Column(db.String())
     minimize = db.Column(db.Boolean)
-    submissions = relationship("Submission", backref="model_grids")
+    submissions = relationship("Submission", backref="model_grids", order_by="Submission.created_at")
 
     created_at = db.Column(DateTime, default=datetime.utcnow)
     updated_at = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)

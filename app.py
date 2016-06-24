@@ -38,11 +38,18 @@ def index():
 def view_model(id):
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
-        grid = modelgrid.get_grid().sort_values(by="_loop_id")
-        columns = list(grid.columns.values)
+        grid = modelgrid.get_grid()
+        complete = grid.loc[grid._loop_status == "complete", :]
+        complete = complete.sort_values(by="_loop_value", ascending=modelgrid.minimize)
+        pending = grid.loc[grid._loop_status == "pending", :]
+        columns = [x for x in list(grid.columns.values) if not x.startswith("_loop")]
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    return render_template('model.html', modelgrid=modelgrid, grid=grid, uuid=str(id), columns=columns)
+    return render_template('model.html',
+                           modelgrid=modelgrid,
+                           complete=complete,
+                           pending=pending,
+                           columns=columns)
 
 
 @app.route("/new_model", methods=['POST'])
@@ -168,11 +175,6 @@ def view_grid(id):
 
 @app.route("/last_values/<uuid:id>", methods=['GET'])
 def last_values(id):
-    ALLOWED_SUBSET_TYPES = [
-        "complete",
-        "pending",
-        "candidate"
-    ]
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
     except:

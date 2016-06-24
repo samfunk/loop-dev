@@ -40,10 +40,43 @@
             <!-- /sidebar menu -->
           </div>
         </div>
-        <!-- page content -->
-        {% block content %}{% endblock %}
-        <!-- /page content -->
+        <style>
+          .jqstooltip{
+            box-sizing: content-box;
+            width: 80px !important;
+            opacity: 0.8;
+            filter: alpha(opacity=80);
+          }
+        </style>
+        <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Loop <small>your friendly neighborhood hyperparameter optimizer</small></h3>
+              </div>
 
+              <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                  <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="Have a model id?.."
+                           id="model-id-textfield"
+                           onkeydown = "if (event.keyCode == 13) document.getElementById('goto-button').click()">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" id="goto-button" type="button">Go!</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <!-- page content -->
+            {% block content %}{% endblock %}
+            <!-- /page content -->
+          </div>
+        </div>
         <!-- footer content -->
         <footer>
           <div class="pull-right">
@@ -54,7 +87,12 @@
         <!-- /footer content -->
       </div>
     </div>
-
+    <script>
+      document.getElementById("goto-button").addEventListener("click", function() {
+        var text = document.getElementById("model-id-textfield").value;
+        window.location = '/model/' + text;
+      });
+    </script>
     <!-- Bootstrap -->
     <script src="{{ url_for('static', filename='js/vendor/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/vendor/bootstrap-progressbar.min.js') }}"></script>
