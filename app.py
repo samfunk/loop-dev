@@ -5,7 +5,7 @@ import re
 import json
 import uuid
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.uuid import FlaskUUID
 from collections import Counter
@@ -34,8 +34,13 @@ def index():
     return render_template('index.html', modelgrids=modelgrids)
 
 
-@app.route('/model/<uuid:id>', methods=['GET'])
-def view_model(id):
+@app.route('/model/<uuid:id>/')
+def default_model_view(id):
+    return redirect(url_for('.view_model', id=str(id), path='table'))
+
+
+@app.route('/model/<uuid:id>/<path>', methods=['GET'])
+def view_model(id, path):
     try:
         modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
         grid = modelgrid.get_grid()
@@ -45,11 +50,15 @@ def view_model(id):
         columns = [x for x in list(grid.columns.values) if not x.startswith("_loop")]
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    return render_template('model.html',
-                           modelgrid=modelgrid,
-                           complete=complete,
-                           pending=pending,
-                           columns=columns)
+    try:
+        return render_template('model_{}.html'.format(path),
+                               modelgrid=modelgrid,
+                               grid=grid,
+                               complete=complete,
+                               pending=pending,
+                               columns=columns)
+    except:
+        return render_template('404.html', model_id=str(id)), 404
 
 
 @app.route("/new_model", methods=['POST'])
@@ -185,7 +194,12 @@ def last_values(id):
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template('404.html'), 404
+    try:
+        model_id = db.session.query(ModelGrid).order_by(desc(ModelGrid.updated_at)).first().id
+    except:
+        model_id = ''
+
+    return render_template('404.html', model_id=model_id), 404
 
 
 @app.errorhandler(500)
