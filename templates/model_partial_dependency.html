@@ -305,14 +305,22 @@
                               'median: ' + param.data[2],
                               'Q1: ' + param.data[1],
                               'min: ' + param.data[0]
-                            ].join('<br/>')
+                            ].join('<br/>');
                           }
                         }
                       },
                       {
                         name: 'outlier',
                         type: 'scatter',
-                        data: data.outliers
+                        data: data.outliers,
+                        tooltip: {
+                          formatter: function (param) {
+                            return [
+                              'Outlier {{column}} = ' + param.name + '<br/>',
+                              'value: ' + param.data[1],
+                            ].join('<br/>');
+                          }
+                        }
                       }
                     ]
                   });
