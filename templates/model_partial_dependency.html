@@ -229,115 +229,113 @@
       };
   </script>
   <div class="row">
-    <div class="col-md-12">
-      <div class="x_panel">
-        <div class="x_title">
-          <h2>{{ modelgrid.name }} <small>Partial dependency plots</small></h2>
-          <div class="clearfix"></div>
-        </div>
-        <div class="x_content">
-          {% for column in columns %}
-            <div id = "boxplot-{{modelgrid.id}}-{{column}}" style = "min-width: 80%; height: 500px;"></div>
-            <script>
-              $(document).ready(function() {
-                var echart_{{column}} = echarts.init(document.getElementById('boxplot-{{modelgrid.id}}-{{column}}'), theme);
-                $.get('/partial_dependency_data/{{modelgrid.id}}/{{column}}').then(function(payload) {
-                  var data = echarts.dataTool.prepareBoxplotData(_.values(payload.data));
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ modelgrid.name }} <small>Partial dependency plots</small></h2>
+        <div class="clearfix"></div>
+      </div>
+      <div class="x_content">
+        {% for column in columns %}
+          <div id = "boxplot-{{modelgrid.id}}-{{column}}" style = "width: 100%; height: 500px;"></div>
+          <script>
+            $(document).ready(function() {
+              var echart_{{column}} = echarts.init(document.getElementById('boxplot-{{modelgrid.id}}-{{column}}'), theme);
+              $.get('/partial_dependency_data/{{modelgrid.id}}/{{column}}').then(function(payload) {
+                var data = echarts.dataTool.prepareBoxplotData(_.values(payload.data));
 
-                  var categoryAxis = {
-                    type: 'category',
-                    data: _.keys(payload.data),
-                    boundaryGap: true,
-                    nameGap: 30,
-                    scale: true,
-                    splitNumber: 5,
-                    splitArea: {
-                      show: false
-                    },
-                    axisLabel: {
-                      formatter: '{value}'
-                    },
-                    splitLine: {
-                      show: true
-                    }
-                  };
-                  var valueAxis = {
-                    scale: true,
-                    position: 'top',
-                    type: 'value',
-                    name: 'value',
-                    splitArea: {
-                      show: true
-                    }
-                  };
+                var categoryAxis = {
+                  type: 'category',
+                  data: _.keys(payload.data),
+                  boundaryGap: true,
+                  nameGap: 30,
+                  scale: true,
+                  splitNumber: 5,
+                  splitArea: {
+                    show: false
+                  },
+                  axisLabel: {
+                    formatter: '{value}'
+                  },
+                  splitLine: {
+                    show: true
+                  }
+                };
+                var valueAxis = {
+                  scale: true,
+                  position: 'top',
+                  type: 'value',
+                  name: 'value',
+                  splitArea: {
+                    show: true
+                  }
+                };
 
-                  echart_{{column}}.setOption({
-                    title: [
-                      {
-                        text: '{{column}}',
-                        left: 'center'
+                echart_{{column}}.setOption({
+                  title: [
+                    {
+                      text: '{{column}}',
+                      left: 'center'
+                    }
+                  ],
+                  tooltip: {
+                    trigger: 'item',
+                    axisPointer: {
+                      type: 'shadow'
+                    }
+                  },
+                  toolbox: {
+                    show: true,
+                    feature: {
+                      saveAsImage: {
+                        show: true,
+                        title: "Save Image"
                       }
-                    ],
-                    tooltip: {
-                      trigger: 'item',
-                      axisPointer: {
-                        type: 'shadow'
-                      }
-                    },
-                    toolbox: {
-                      show: true,
-                      feature: {
-                        saveAsImage: {
-                          show: true,
-                          title: "Save Image"
+                    }
+                  },
+                  grid: {
+                    left: '10%',
+                    right: '10%',
+                    bottom: '15%'
+                  },
+                  xAxis: categoryAxis,
+                  yAxis: valueAxis,
+                  series: [
+                    {
+                      name: 'boxplot',
+                      type: 'boxplot',
+                      data: data.boxData,
+                      tooltip: {
+                        formatter: function (param) {
+                          return [
+                            'Summary for {{column}} = ' + param.name + '<br/>',
+                            'max: ' + param.data[4],
+                            'Q3: ' + param.data[3],
+                            'median: ' + param.data[2],
+                            'Q1: ' + param.data[1],
+                            'min: ' + param.data[0]
+                          ].join('<br/>');
                         }
                       }
                     },
-                    grid: {
-                      left: '10%',
-                      right: '10%',
-                      bottom: '15%'
-                    },
-                    xAxis: categoryAxis,
-                    yAxis: valueAxis,
-                    series: [
-                      {
-                        name: 'boxplot',
-                        type: 'boxplot',
-                        data: data.boxData,
-                        tooltip: {
-                          formatter: function (param) {
-                            return [
-                              'Summary for {{column}} = ' + param.name + '<br/>',
-                              'max: ' + param.data[4],
-                              'Q3: ' + param.data[3],
-                              'median: ' + param.data[2],
-                              'Q1: ' + param.data[1],
-                              'min: ' + param.data[0]
-                            ].join('<br/>');
-                          }
-                        }
-                      },
-                      {
-                        name: 'outlier',
-                        type: 'scatter',
-                        data: data.outliers,
-                        tooltip: {
-                          formatter: function (param) {
-                            return [
-                              'Outlier {{column}} = ' + param.name + '<br/>',
-                              'value: ' + param.data[1],
-                            ].join('<br/>');
-                          }
+                    {
+                      name: 'outlier',
+                      type: 'scatter',
+                      data: data.outliers,
+                      tooltip: {
+                        formatter: function (param) {
+                          return [
+                            'Outlier {{column}} = ' + param.name + '<br/>',
+                            'value: ' + param.data[1],
+                          ].join('<br/>');
                         }
                       }
-                    ]
-                  });
+                    }
+                  ]
                 });
               });
-            </script>
-          {% endfor %}
-        </div>
+            });
+          </script>
+        {% endfor %}
       </div>
     </div>
   </div>
