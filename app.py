@@ -192,6 +192,16 @@ def last_values(id):
     return jsonify(values=values[-20:])
 
 
+@app.route("/partial_dependency_data/<uuid:id>/<column>", methods=['GET'])
+def partial_dependency_data(id, column):
+    try:
+        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+    except:
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
+    values = [x.value for x in modelgrid.submissions]
+    return jsonify(values=values[-20:])
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     try:
