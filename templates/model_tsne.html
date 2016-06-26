@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+  <ul class="nav side-menu">
+    <li>
+      <a href="{{ url_for('.view_model', id=modelgrid.id, path='table') }}"><i class="fa fa-table"></i> Tables </a>
+    </li>
+    <li>
+      <a href="{{ url_for('.view_model', id=modelgrid.id, path='partial_dependency') }}"><i class="fa fa-bar-chart"></i> Partial Dependency </a>
+    </li>
+    <li class = "active">
+      <a href="{{ url_for('.view_model', id=modelgrid.id, path='tsne') }}"><i class="fa fa-braille"></i> t-SNE </a>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>{{ modelgrid.name }} <small>t-SNE projection</small></h2>
+          <div class="clearfix"></div>
+        </div>
+        <div class="x_content">
+          Coming Soon
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

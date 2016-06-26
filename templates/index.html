@@ -32,9 +32,9 @@
                 {% set values = submissions|map(attribute='value') %}
                 {% set best_value = modelgrid.best_value() if modelgrid.best_value() else "No model runs complete yet" %}
                 <tr>
-                  <td><a href="{{ url_for('.view_model', id=modelgrid.id) }}">{{ modelgrid.id }}</a></td>
+                  <td><a href="{{ url_for('.view_model', id=modelgrid.id, path='table') }}">{{ modelgrid.id }}</a></td>
                   <td>
-                    <a href="{{ url_for('.view_model', id=modelgrid.id) }}" data-toggle="tooltip" data-placement="top" title="{{ modelgrid.name }}">{{ modelgrid.name|truncate(20, true) }}</a>
+                    <a href="{{ url_for('.view_model', id=modelgrid.id, path='table') }}" data-toggle="tooltip" data-placement="top" title="{{ modelgrid.name }}">{{ modelgrid.name|truncate(20, true) }}</a>
                     <br />
                     <small>Last updated {{ modelgrid.updated_at.strftime("%b %d %Y %H:%M:%S") }}</small>
                   </td>
