@@ -195,11 +195,13 @@ def last_values(id):
 @app.route("/partial_dependency_data/<uuid:id>/<column>", methods=['GET'])
 def partial_dependency_data(id, column):
     try:
-        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+        grid = db.session.query(ModelGrid).filter_by(id=str(id)).first().get_grid()
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    values = [x.value for x in modelgrid.submissions]
-    return jsonify(values=values[-20:])
+    aggregate = grid.loc[grid._loop_status == "complete", ['_loop_duration', column]]
+    aggregate = aggregate.groupby(column)
+    aggregate = aggregate.groups
+    return jsonify(data=aggregate)
 
 
 @app.errorhandler(404)
