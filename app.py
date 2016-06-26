@@ -198,9 +198,10 @@ def partial_dependency_data(id, column):
         grid = db.session.query(ModelGrid).filter_by(id=str(id)).first().get_grid()
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
-    aggregate = grid.loc[grid._loop_status == "complete", ['_loop_duration', column]]
+    aggregate = grid.loc[grid._loop_status == "complete", :]
     aggregate = aggregate.groupby(column)
     aggregate = aggregate.groups
+    aggregate = {str(k): grid.loc[v, '_loop_value'].values.tolist() for k, v in aggregate.items()}
     return jsonify(data=aggregate)
 
 
