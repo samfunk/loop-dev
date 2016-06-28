@@ -4,12 +4,14 @@ import math
 import re
 import json
 import uuid
+import pandas as pd
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.uuid import FlaskUUID
 from collections import Counter
 from sqlalchemy import desc
+from sklearn.manifold import TSNE
 
 from lib.make_grid import make_grid
 from lib.choosers import *
@@ -203,6 +205,21 @@ def partial_dependency_data(id, column):
     aggregate = aggregate.groups
     aggregate = {str(k): grid.loc[v, '_loop_value'].values.tolist() for k, v in aggregate.items()}
     return jsonify(data=aggregate)
+
+
+@app.route("/tsne_data/<uuid:id>/", methods=['GET'])
+def tsne_data(id, column):
+    try:
+        grid = db.session.query(ModelGrid).filter_by(id=str(id)).first().get_grid()
+    except:
+        return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
+    columns = [x for x in list(grid.columns.values) if not x.startswith("_loop")]
+    coords = grid.loc[:, coords]
+    metric = request.args.get('metric') if request.args.get('metric') else 'euclidean'
+    model = TSNE(random_state=0, n_iter_without_progress=30, metric=metric)
+    projection = model.fit_transform(coords)
+    # subdivide into array of arrays based on _loop_value
+    return jsonify(data=points)
 
 
 @app.errorhandler(404)
