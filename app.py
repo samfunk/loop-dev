@@ -5,6 +5,7 @@ import re
 import json
 import uuid
 import pandas as pd
+import numpy as np
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -208,18 +209,57 @@ def partial_dependency_data(id, column):
 
 
 @app.route("/tsne_data/<uuid:id>/", methods=['GET'])
-def tsne_data(id, column):
+def tsne_data(id):
+    NUM_CATEGORIES = 5
     try:
-        grid = db.session.query(ModelGrid).filter_by(id=str(id)).first().get_grid()
+        modelgrid = db.session.query(ModelGrid).filter_by(id=str(id)).first()
+        grid = modelgrid.get_grid().sort_values(by="_loop_id")
     except:
         return jsonify(exception="Unable to find a model with uuid {} in the database.".format(id))
     columns = [x for x in list(grid.columns.values) if not x.startswith("_loop")]
-    coords = grid.loc[:, coords]
-    metric = request.args.get('metric') if request.args.get('metric') else 'euclidean'
+    coords = grid.loc[:, columns]
+    metric = request.args.get('metric') if request.args.get('metric') else 'mahalanobis'
     model = TSNE(random_state=0, n_iter_without_progress=30, metric=metric)
     projection = model.fit_transform(coords)
     # subdivide into array of arrays based on _loop_value
-    return jsonify(data=points)
+    classes = grid.groupby(pd.cut(grid._loop_value, NUM_CATEGORIES)).groups
+    missing = grid.loc[grid._loop_value.isnull()].index.tolist()
+    # find best point for the chart
+    submissions = modelgrid.submissions
+    values = [x.value for x in submissions]
+    which_best = np.argmin(values) if modelgrid.minimize else np.argmax(values)
+    which_best = [x.loop_id for x in submissions][which_best]
+    # split and highlight points
+    points = {}
+    which_missing = [int(x) for x in missing]
+    points['unsampled'] = {
+        'coordinates': projection[which_missing].tolist(),
+        'tooltip': coords.loc[which_missing].to_json(),
+        'loop_id': which_missing,
+        'value': ['NaN' for x in which_missing]
+    }
+
+    for k in classes.keys():
+        which = [int(x) for x in classes[k]]
+        if which_best in which:
+            best_point = {
+                'coordinates': projection[which_best].tolist(),
+                'tooltip': coords.loc[which_best].to_json(),
+                'loop_id': which_best,
+                'value': grid.loc[which_best]._loop_value
+            }
+        else:
+            best_point = False
+        coordinates = projection[which].tolist()
+        tooltip = coords.loc[which].to_json()
+        points[k] = {
+            'coordinates': coordinates,
+            'tooltip': tooltip,
+            'loop_id': which,
+            'value': list(grid.loc[which]._loop_value.values),
+            'best_point': best_point
+        }
+    return jsonify(projection=points, best_point=best_point)
 
 
 @app.errorhandler(404)
