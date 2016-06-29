@@ -300,7 +300,7 @@
                         var id = params.dataIndex;
                         var cols = _.keys(grid);
                         var value = meta.value[id];
-                        return 'loop_id: ' + meta.loop_id[id] + '; value: ' + value + ' :<br/>' + _.reduce(_.map(cols, x => x + ': ' + _.values(grid[x])[id].toFixed(2) + ';'), (sum, n) => sum + ' ' + n, '');
+                        return 'loop_id: ' + meta.loop_id[id] + '; value: ' + value + ' :<br/>' + _.reduce(_.map(cols, x => x + ': ' + _.values(grid[x])[id] + ';'), (sum, n) => sum + ' ' + n, '');
                       }
                     },
                     data: values.coordinates
