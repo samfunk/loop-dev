@@ -240,7 +240,7 @@
           <script>
             $(document).ready(function() {
               var echart_{{column}} = echarts.init(document.getElementById('boxplot-{{modelgrid.id}}-{{column}}'), theme);
-              $.get('/partial_dependency_data/{{modelgrid.id}}/{{column}}/').then(function(payload) {
+              $.get('/partial_dependency_data/{{modelgrid.id}}/{{column}}').then(function(payload) {
                 var data = echarts.dataTool.prepareBoxplotData(_.values(payload.data));
 
                 var categoryAxis = {
