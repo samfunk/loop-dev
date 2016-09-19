@@ -220,7 +220,10 @@ def tsne_data(id):
     coords = grid.loc[:, columns]
     metric = request.args.get('metric') if request.args.get('metric') else 'mahalanobis'
     model = TSNE(random_state=0, n_iter_without_progress=30, metric=metric)
-    projection = model.fit_transform(coords)
+    try:
+        projection = model.fit_transform(coords)
+    except ValueError as err:
+        return jsonify(exception="Unable to fit TSNE for model with uuid {} because: {}".format(id, err))
     # subdivide into array of arrays based on _loop_value
     classes = grid.groupby(pd.cut(grid._loop_value, NUM_CATEGORIES)).groups
     missing = grid.loc[grid._loop_value.isnull()].index.tolist()
