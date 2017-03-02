@@ -9,7 +9,7 @@
     "deep learning"
   ],
   "repository": "https://github.com/kirillseva/loop",
-  "logo": "https://github.com/kirillseva/loop/blob/master/static/img/avant-logo-dark.png",
+  "logo": "https://github.com/kirillseva/loop/raw/master/static/img/avant-logo-dark.png",
   "scripts": {
     "postdeploy": "python manage.py db upgrade"
   },
