@@ -8,8 +8,8 @@
     "sklearn",
     "deep learning"
   ],
-  "repository": "https://github.com/kirillseva/loop",
-  "logo": "https://github.com/kirillseva/loop/raw/master/static/img/avant-logo-heroku.jpg",
+  "repository": "https://github.com/avantcredit/loop",
+  "logo": "https://github.com/avantcredit/loop/raw/master/static/img/avant-logo-heroku.jpg",
   "scripts": {
     "postdeploy": "python manage.py db upgrade"
   },
