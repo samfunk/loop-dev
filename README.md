@@ -69,7 +69,7 @@ List available choosers.
 }
 ```
 
-### GET /new_iteration/<experiment_id>
+### GET /new_iteration/{experiment_id}
 Get a set of hyperparameters to evaluate.
 
 ```
@@ -84,7 +84,7 @@ Get a set of hyperparameters to evaluate.
 }
 ```
 
-### POST /report_metric/<experiment_id>
+### POST /report_metric/{experiment_id}
 Report results of a model training run.
 
 ```
@@ -96,7 +96,7 @@ Report results of a model training run.
 }
 ```
 
-### GET /grid/<experiment_id>
+### GET /grid/{experiment_id}
 List grid points corresponding to an experiment.
 Can pass an optional query parameter `subset`.
 Subset can be one of "complete", "pending" or "candidate".
