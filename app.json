@@ -24,7 +24,7 @@
     },
     "LOOP_MCMC_ITERS": {
       "description": "Number of MCMC runs for estimating fantasies",
-      "value": 10
+      "value": "10"
     }
   },
   "formation": {
