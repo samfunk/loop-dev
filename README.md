@@ -6,6 +6,20 @@ Take a look at
 [this](https://github.com/avantcredit/loop/raw/master/BayesianOptimization.pptx)
 presentation to see why you might need this.
 
+If you'd like to make a change, or make a request to make a change
+(like ask to improve a certain aspect of documentation, or add authentication support, etc.),
+please open an issue before you start working on a pull request. This way
+we can plan the implementation together and keep the project coherent and useful to a wider community.
+
+## Official clients
+
+Please open an issue if you'd like a new client package to be listed here.
+
+language|link to project                         |comment
+--------|:---------------------------------------|--------
+R       |https://github.com/kirillseva/loopr     | official R client
+python  |your package could be here!             | :bow:
+
 ## API reference
 
 ### POST /new_model
