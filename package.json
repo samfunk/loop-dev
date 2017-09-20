@@ -1,0 +1,55 @@
+{
+  "name": "loop",
+  "version": "1.0.0",
+  "description": "## Hyperparameter optimization as a service",
+  "main": "webpack.config.js",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "gulp": "gulp",
+    "prestart": "gulp build",
+    "start": "DATABASE_URL='postgresql://postgres:postgres@localhost/jemery62' python manage.py runserver"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avantoss/loop.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/avantoss/loop/issues"
+  },
+  "homepage": "https://github.com/avantoss/loop#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "browserify": "^14.4.0",
+    "copy-webpack-plugin": "^4.0.1",
+    "create-react-class": "^15.6.0",
+    "eslint": "^4.7.1",
+    "eslint-loader": "^1.9.0",
+    "file-loader": "^0.11.2",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.0",
+    "gulp-clean": "^0.3.2",
+    "gulp-jscs": "^4.0.0",
+    "gulp-jshint": "^2.0.4",
+    "gulp-nodemon": "^2.2.1",
+    "gulp-open": "^2.0.0",
+    "gulp-print": "^2.0.1",
+    "html-loader": "^0.5.1",
+    "jshint": "^2.9.5",
+    "jshint-loader": "^0.8.4",
+    "jshint-stylish": "^2.2.1",
+    "node-libs-browser": "^2.0.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "reactify": "^1.1.1",
+    "strip-loader": "^0.1.2",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "dependencies": {}
+}
