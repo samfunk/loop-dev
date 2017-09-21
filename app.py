@@ -56,8 +56,7 @@ def index():
         modelgrids = db.session.query(ModelGrid).order_by(desc(ModelGrid.updated_at)).limit(10)
     except:
         return jsonify(exception="Cannot connect to the database.")
-    # return render_template('index.html', modelgrids=modelgrids)
-    return render_template('build/index.html', modelgrids=modelgrids)
+    return render_template('index.html', modelgrids=modelgrids)
 
 
 @app.route('/model/<uuid:id>/')
