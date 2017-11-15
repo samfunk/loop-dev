@@ -1,0 +1,28 @@
+version: '3.1'
+services:
+  web:
+    build: .
+    command: gunicorn -t 60 app:app
+    ports:
+      - '5000:5000'
+    environment:
+      - PORT=5000
+      - FLASK_CONFIG=config.ProductionConfig
+      - DATABASE_URL=postgres://postgres@db:5432
+      - SECRET_KEY=UYx1LDkOnRxRd3vfGVLiFZ1iuLVDQj7bAlE0riJEt-4Jv4Na6ihONw4RjY76JinlVxxD4-TcoKJSdqe8xa5y-a7ROFmc2AgQrAs6idFk1JZye0T74w-oXaSonrkXYQHrDE-6Oei7PAtW56Nfz8f-QAbXaCZKTsqI93hRrE-DYpWlYy6Q_n30krol7ZwN0KtpI9w1dt3e8wde7jhQ7Cwh7J54C89__0hq2lFQWICS49UGX2sf9xrX8W19-8EywVvuP0AIq_ZRbcOz7ADDQG1UeKZ8sCdttS_ISiYeSW3jjCdZ5NhAbGynPuJtts7HLHXPtApINjEODKMoXKaHMSIlPg
+    depends_on:
+      - db
+      - migrations
+
+  db:
+    image: postgres:9.6
+
+  # only need to perform db migrations once in production
+  migrations:
+    build: .
+    command: python manage.py db upgrade
+    depends_on:
+      - db
+    environment:
+      - FLASK_CONFIG=config.ProductionConfig
+      - DATABASE_URL=postgres://postgres@db:5432
