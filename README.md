@@ -131,6 +131,12 @@ $ pip install -r requirements.txt
 $ python manage.py db upgrade
 ```
 
+Or, if you have `docker` and `docker-compose` installed, you can simply
+
+```sh
+docker-compose up
+```
+
 You're ready to go!
 
 ### Tests
