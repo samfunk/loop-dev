@@ -12,4 +12,4 @@ EXPOSE 5000
 
 WORKDIR /root/loop
 
-CMD ["gunicorn", "-t", "60", "app:app"]
+CMD ["gunicorn", "-t", "60", "-b", "0.0.0.0:5000", "app:app"]
