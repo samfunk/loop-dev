@@ -50,6 +50,11 @@ db = SQLAlchemy(app)
 from models import *
 
 
+@app.route('/heartbeat', methods=['GET'])
+def heartbeat():
+    return "true"
+
+
 @app.route('/', methods=['GET'])
 def index():
     try:
