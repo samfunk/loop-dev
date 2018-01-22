@@ -11,3 +11,5 @@ RUN pip install --no-cache-dir -r /root/loop/requirements.txt
 EXPOSE 5000
 
 WORKDIR /root/loop
+
+CMD ["gunicorn", "-t", "60", "app:app"]
