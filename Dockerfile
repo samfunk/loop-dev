@@ -4,9 +4,11 @@ LABEL maintainer="kirill.sevastyanenko@avant.com"
 
 RUN mkdir -p /root/loop
 
-ADD . /root/loop
+ADD requirements.txt /root/loop/requirements.txt
 
 RUN pip install --no-cache-dir -r /root/loop/requirements.txt
+
+ADD . /root/loop
 
 EXPOSE 5000
 

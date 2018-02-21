@@ -35,6 +35,7 @@ from flask.ext.uuid import FlaskUUID
 from collections import Counter
 from sqlalchemy import desc
 from sklearn.manifold import TSNE
+from werkzeug.contrib.fixers import ProxyFix
 
 from lib.make_grid import make_grid
 from lib.choosers import *
@@ -42,6 +43,7 @@ from lib.utils import *
 
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 FlaskUUID(app)
 app.config.from_object(os.getenv('APP_SETTINGS') or 'config.DevelopmentConfig')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
@@ -52,7 +54,8 @@ from models import *
 
 @app.before_request
 def before_request():
-    if request.url.startswith('http://') and not re.search("heartbeat", request.url):
+    protocol = request.headers.get('X-Forwarded-Proto')
+    if protocol == 'http' and not re.search("heartbeat", request.url):
         url = request.url.replace('http://', 'https://', 1)
         code = 301
         return redirect(url, code=code)
