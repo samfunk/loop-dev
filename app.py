@@ -52,14 +52,24 @@ from models import *
 
 @app.before_request
 def before_request():
-    if request.url.startswith('http://'):
+    if request.url.startswith('http://') and not re.search("heartbeat", request.url):
         url = request.url.replace('http://', 'https://', 1)
         code = 301
         return redirect(url, code=code)
 
 @app.route('/heartbeat', methods=['GET'])
 def heartbeat():
-    return "true"
+    ENV_VARS = [
+      'DEVOPS_APP_NAME',
+      'DEVOPS_PARTNER_NAME',
+      'DEVOPS_APP_ENV',
+      'DEVOPS_GIT_SHA',
+      'DEVOPS_BUILD_ID',
+      'DEVOPS_DEPLOY_ID',
+      'DEVOPS_CONSOLE_CMD',
+      'DEVOPS_LOGS_CMD'
+    ]
+    return jsonify({x: os.getenv(x) for x in ENV_VARS})
 
 
 @app.route('/', methods=['GET'])
